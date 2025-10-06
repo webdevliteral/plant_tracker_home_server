@@ -13,68 +13,64 @@ body {
   background: #f4f7f5;
   min-height: 100vh;
   color: #2d3e2d;
+  margin: 0;
+  padding: 0;
 }
 
 .container {
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
-  padding: 40px;
+  padding: 40px 60px;
   width: 100%;
+  box-sizing: border-box;
 }
 
 /* Header Styling */
 .header {
   background: white;
-  border-radius: 8px;
-  padding: 48px 40px;
-  margin-bottom: 32px;
+  border-radius: 12px;
+  padding: 40px 48px;
+  margin-bottom: 24px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
   border: 1px solid #e8ede9;
+  position: relative;
+}
+
+.header > div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.header > div > div:first-child {
+  flex: 1;
   text-align: center;
 }
 
 .header h1 {
   color: #2d5016;
-  font-size: 3em;
+  font-size: 2.5em;
   font-family: 'Cormorant Garamond', serif;
   font-weight: 600;
   letter-spacing: 2px;
-  margin-bottom: 12px;
-  position: relative;
-  display: inline-block;
-}
-
-.header h1::before,
-.header h1::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  width: 60px;
-  height: 1px;
-  background: linear-gradient(to right, transparent, #81a684, transparent);
-}
-
-.header h1::before {
-  right: 110%;
-}
-
-.header h1::after {
-  left: 110%;
+  margin-bottom: 8px;
 }
 
 .header p {
   color: #5a7255;
-  font-size: 1.1em;
+  font-size: 1em;
   font-weight: 300;
-  letter-spacing: 1px;
+  letter-spacing: 0.5px;
 }
 
-.header > div {
+.header > div > div:last-child {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 40px;
-  position: relative;
+  gap: 12px;
+  position: absolute;
+  right: 48px;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 /* Welcome Screen */
@@ -143,11 +139,11 @@ body {
 /* Navigation */
 .nav {
   background: white;
-  border-radius: 8px;
-  padding: 8px;
+  border-radius: 12px;
+  padding: 12px;
   margin-bottom: 32px;
   display: flex;
-  gap: 8px;
+  gap: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
   border: 1px solid #e8ede9;
 }
@@ -184,20 +180,21 @@ body {
 /* Plant Grid */
 .plants-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 24px;
   margin-bottom: 24px;
 }
 
 .plant-card {
   background: white;
-  border-radius: 8px;
+  border-radius: 12px;
   padding: 32px;
   cursor: pointer;
   transition: all 0.3s ease;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
   border: 1px solid #e8ede9;
   position: relative;
+  min-height: 200px;
 }
 
 .plant-card:hover {
@@ -656,9 +653,15 @@ body {
 }
 
 /* Responsive Design */
+@media (max-width: 1200px) {
+  .container {
+    padding: 30px 40px;
+  }
+}
+
 @media (max-width: 768px) {
   .container {
-    padding: 20px 16px;
+    padding: 20px;
   }
 
   .header {
@@ -669,9 +672,15 @@ body {
     font-size: 2em;
   }
 
-  .header h1::before,
-  .header h1::after {
-    display: none;
+  .header > div > div:last-child {
+    position: static;
+    transform: none;
+    margin-top: 20px;
+    justify-content: center;
+  }
+
+  .header > div {
+    flex-direction: column;
   }
 
   .plants-grid {
@@ -688,5 +697,15 @@ body {
 
   .activity-buttons {
     grid-template-columns: repeat(2, 1fr);
+  }
+
+  .schedule-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .schedule-item > div:last-child {
+    text-align: left;
   }
 }
