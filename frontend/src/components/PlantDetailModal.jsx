@@ -26,47 +26,34 @@ function PlantDetailModal({ plant, onClose, onAddActivity, recommendations, care
 
   const activityColors = {
     water: '#4a90e2',
-    feed: '#50c878',
+    feed: '#5a8a5e',
     prune: '#9b59b6',
-    note: '#ff69b4'
+    note: '#81a684'
   }
 
   return (
     <div className="modal-overlay">
       <div className="modal">
-        <div style={{ borderBottom: '3px solid #ffd1dc', paddingBottom: '20px', marginBottom: '20px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start' }}>
+        <div>
+          <div>
             <div>
-              <h2>{plant.name} 🌸</h2>
-              <p style={{ color: '#ff69b4', fontSize: '1.1em' }}>{plant.strain}</p>
-              <p style={{ color: '#999', fontSize: '0.9em', marginTop: '5px' }}>
+              <h2>{plant.name}</h2>
+              <p>{plant.strain}</p>
+              <p style={{ color: '#81a684', fontSize: '0.9em', marginTop: '8px' }}>
                 <i className="fas fa-seedling"></i> Stage: {plant.stage}
               </p>
             </div>
-            <button
-              onClick={onClose}
-              style={{
-                background: 'none',
-                border: 'none',
-                fontSize: '2em',
-                color: '#ff69b4',
-                cursor: 'pointer'
-              }}
-            >
-              ×
-            </button>
+            <button onClick={onClose}>×</button>
           </div>
         </div>
 
         {recommendations.length > 0 && (
-          <div className="recommendation" style={{ marginBottom: '25px' }}>
-            <div style={{ fontWeight: 'bold', marginBottom: '10px' }}>
-              <i className="fas fa-sparkles"></i> Plant Care Tips
+          <div className="recommendation" style={{ marginBottom: '32px' }}>
+            <div style={{ fontWeight: '500', marginBottom: '12px', color: '#2d5016' }}>
+              <i className="fas fa-lightbulb"></i> Care Recommendations
             </div>
             {recommendations.map((rec, i) => (
-              <div key={i} style={{ marginBottom: '5px', fontSize: '0.95em' }}>
-                {rec}
-              </div>
+              <div key={i} style={{ marginBottom: '8px', fontSize: '0.95em' }}>{rec}</div>
             ))}
           </div>
         )}
@@ -74,21 +61,13 @@ function PlantDetailModal({ plant, onClose, onAddActivity, recommendations, care
         <button
           onClick={() => setShowActivityForm(!showActivityForm)}
           className="button button-primary"
-          style={{ width: '100%', marginBottom: '20px' }}
+          style={{ width: '100%', marginBottom: '24px' }}
         >
-          <i className="fas fa-plus"></i> Log Care Activity 💕
+          <i className="fas fa-plus"></i> Log Care Activity
         </button>
 
         {showActivityForm && (
-          <div
-            style={{
-              padding: '20px',
-              border: '3px solid #ffd1dc',
-              borderRadius: '20px',
-              marginBottom: '25px',
-              background: '#fff0f5'
-            }}
-          >
+          <div style={{ padding: '24px', border: '1px solid #e8ede9', borderRadius: '8px', marginBottom: '32px', background: '#fafbfa' }}>
             <div className="activity-buttons">
               {Object.entries(activityIcons).map(([type, icon]) => (
                 <div
@@ -96,53 +75,51 @@ function PlantDetailModal({ plant, onClose, onAddActivity, recommendations, care
                   onClick={() => setActivityType(type)}
                   className={`activity-button ${activityType === type ? 'active' : ''}`}
                 >
-                  <i
-                    className={`fas ${icon}`}
-                    style={{ color: activityType === type ? 'white' : activityColors[type] }}
-                  ></i>
-                  <span style={{ fontSize: '0.9em', textTransform: 'capitalize' }}>{type}</span>
+                  <i className={`fas ${icon}`}></i>
+                  <span>{type}</span>
                 </div>
               ))}
             </div>
-            <textarea
-              value={note}
-              onChange={(e) => setNote(e.target.value)}
-              placeholder="Add notes (optional) 📝"
-              rows="3"
-            />
-            <button onClick={handleAddActivity} className="button button-primary" style={{ width: '100%', marginTop: '15px' }}>
+            <div className="input-group">
+              <label>Notes (optional)</label>
+              <textarea
+                value={note}
+                onChange={(e) => setNote(e.target.value)}
+                placeholder="Add any additional details..."
+                rows="3"
+              />
+            </div>
+            <button onClick={handleAddActivity} className="button button-primary" style={{ width: '100%' }}>
               Save Activity
             </button>
           </div>
         )}
 
         <div className="activity-log">
-          <h3 style={{ fontWeight: 'bold', color: '#ff1493', marginBottom: '15px' }}>
-            Activity Log 📋
-          </h3>
-          <div style={{ maxHeight: '300px', overflowY: 'auto' }}>
+          <h3>Activity Log</h3>
+          <div style={{ maxHeight: '400px', overflowY: 'auto' }}>
             {plant.activities.map(activity => (
               <div key={activity.id} className="activity-item">
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
-                  <span style={{ fontWeight: 'bold', color: '#ff1493', textTransform: 'capitalize' }}>
-                    <i className={`fas ${activityIcons[activity.type]}`} style={{ marginRight: '8px' }}></i>
+                <div>
+                  <span>
+                    <i className={`fas ${activityIcons[activity.type]}`}></i>
                     {activity.type}
                   </span>
-                  <span style={{ fontSize: '0.85em', color: '#999' }}>
+                  <span style={{ fontSize: '0.85em', color: '#81a684' }}>
                     {new Date(activity.timestamp).toLocaleString()}
                   </span>
                 </div>
                 {activity.note && (
-                  <p style={{ color: '#666', fontSize: '0.95em', marginBottom: '5px' }}>
+                  <p style={{ marginTop: '8px', marginBottom: '8px' }}>
                     {activity.note}
                   </p>
                 )}
-                <p style={{ fontSize: '0.85em', color: '#999' }}>by {activity.caretaker}</p>
+                <p style={{ fontSize: '0.85em', color: '#81a684' }}>by {activity.caretaker}</p>
               </div>
             ))}
             {plant.activities.length === 0 && (
-              <p style={{ textAlign: 'center', color: '#ff69b4', padding: '20px' }}>
-                No activities logged yet 🌱
+              <p style={{ textAlign: 'center', color: '#81a684', padding: '32px' }}>
+                No activities logged yet
               </p>
             )}
           </div>

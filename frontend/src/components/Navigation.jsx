@@ -5,13 +5,13 @@ function Navigation({ view, onViewChange }) {
         onClick={() => onViewChange('plants')}
         className={view === 'plants' ? 'active' : ''}
       >
-        <i className="fas fa-seedling"></i> My Plant Babies
+        <i className="fas fa-leaf"></i> My Plants
       </button>
       <button
         onClick={() => onViewChange('schedule')}
         className={view === 'schedule' ? 'active' : ''}
       >
-        <i className="fas fa-calendar-heart"></i> Care Schedule
+        <i className="fas fa-calendar-alt"></i> Care Schedule
       </button>
     </nav>
   )

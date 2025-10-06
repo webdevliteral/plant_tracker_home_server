@@ -8,24 +8,22 @@ function PlantCard({ plant, onClick, getRecommendations }) {
 
   return (
     <div onClick={onClick} className="plant-card">
-      <h3>{plant.name} 🌸</h3>
-      <p style={{ color: '#ff69b4', marginBottom: '15px', fontSize: '0.95em' }}>
-        {plant.strain || 'Special Baby'}
-      </p>
+      <h3>{plant.name}</h3>
+      <p>{plant.strain || 'No strain specified'}</p>
       <div>
         <div className="stat">
           <i className="fas fa-droplet"></i>
-          {lastWater ? `Watered ${daysSinceWater}d ago` : 'Not watered yet 💦'}
+          {lastWater ? `Watered ${daysSinceWater}d ago` : 'Not watered yet'}
         </div>
         <div className="stat">
           <i className="fas fa-seedling"></i>
-          Stage: {plant.stage || 'Growing'} 🌱
+          Stage: {plant.stage || 'Growing'}
         </div>
       </div>
       {recommendations.length > 0 && (
         <div className="recommendation">
           <i className="fas fa-lightbulb"></i>
-          <span style={{ fontSize: '0.9em' }}>{recommendations[0]}</span>
+          <span>{recommendations[0]}</span>
         </div>
       )}
     </div>

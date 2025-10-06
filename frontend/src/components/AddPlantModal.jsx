@@ -16,42 +16,36 @@ function AddPlantModal({ onAdd, onClose }) {
   return (
     <div className="modal-overlay">
       <div className="modal">
-        <h2>Add New Plant Baby 🌱✨</h2>
+        <h2>Add New Plant</h2>
         <div>
           <div className="input-group">
-            <label>
-              <i className="fas fa-tag"></i> Plant Name
-            </label>
+            <label><i className="fas fa-tag"></i> Plant Name</label>
             <input
               type="text"
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              placeholder="e.g., Rosie the Rose 🌹"
+              placeholder="e.g., Northern Lights #1"
             />
           </div>
           <div className="input-group">
-            <label>
-              <i className="fas fa-dna"></i> Strain (optional)
-            </label>
+            <label><i className="fas fa-dna"></i> Strain (optional)</label>
             <input
               type="text"
               value={formData.strain}
               onChange={(e) => setFormData({ ...formData, strain: e.target.value })}
-              placeholder="e.g., Blue Dream 💙"
+              placeholder="e.g., Blue Dream"
             />
           </div>
           <div className="input-group">
-            <label>
-              <i className="fas fa-seedling"></i> Growth Stage
-            </label>
+            <label><i className="fas fa-seedling"></i> Growth Stage</label>
             <select
               value={formData.stage}
               onChange={(e) => setFormData({ ...formData, stage: e.target.value })}
             >
-              <option value="seedling">🌱 Baby Seedling</option>
-              <option value="vegetative">🌿 Growing Strong</option>
-              <option value="flowering">🌸 Flowering Beauty</option>
-              <option value="harvest">🎉 Ready to Harvest</option>
+              <option value="seedling">Seedling</option>
+              <option value="vegetative">Vegetative</option>
+              <option value="flowering">Flowering</option>
+              <option value="harvest">Ready to Harvest</option>
             </select>
           </div>
         </div>
@@ -60,7 +54,7 @@ function AddPlantModal({ onAdd, onClose }) {
             Cancel
           </button>
           <button onClick={handleSubmit} className="button button-primary">
-            <i className="fas fa-heart"></i> Add Plant Baby!
+            <i className="fas fa-plus"></i> Add Plant
           </button>
         </div>
       </div>
