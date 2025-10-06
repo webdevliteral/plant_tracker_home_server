@@ -1,4 +1,36 @@
 {
-  "plants": [],
+  "plants": [
+    {
+      "id": 1759787877860,
+      "name": "Test Plant",
+      "strain": "test",
+      "stage": "seedling",
+      "activities": [
+        {
+          "type": "feed",
+          "note": "TEST!",
+          "caretaker": "Devin",
+          "id": 1759787921118,
+          "timestamp": "2025-10-06T21:58:41.118Z"
+        },
+        {
+          "type": "water",
+          "note": "Test activity!",
+          "caretaker": "Devin",
+          "id": 1759787888554,
+          "timestamp": "2025-10-06T21:58:08.554Z"
+        }
+      ],
+      "createdAt": "2025-10-06T21:57:57.860Z"
+    },
+    {
+      "id": 1759788014130,
+      "name": "Weed",
+      "strain": "Blue",
+      "stage": "vegetative",
+      "activities": [],
+      "createdAt": "2025-10-06T22:00:14.130Z"
+    }
+  ],
   "caretakers": []
 }

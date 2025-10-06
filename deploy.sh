@@ -13,7 +13,7 @@ cp -r dist/* ../backend/public/
 
 # Restart backend service
 cd ../backend
-sudo systemctl restart plant-tracker
+sudo systemctl restart plant-backend
 
 echo "✅ Deployment complete!"
-echo "Access at http://YOUR_SERVER_IP:3000"
+echo "Access at http://192.168.1.87:3000"

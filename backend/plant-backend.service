@@ -1,0 +1,15 @@
+[Unit]
+Description=Plant Tracker Backend
+After=network.target
+
+[Service]
+Type=simple
+User=plants
+WorkingDirectory=/home/plants/plant_tracker_home_server/backend
+ExecStart=/usr/bin/node /home/plants/plant_tracker_home_server/backend/server.js
+Restart=on-failure
+RestartSec=10
+Environment=NODE_ENV=production
+
+[Install]
+WantedBy=multi-user.target
