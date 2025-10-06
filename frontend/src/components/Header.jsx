@@ -6,7 +6,7 @@ function Header({ caretaker, onExport, onImport }) {
           <h1>Plant Tracker</h1>
           <p>Hello, {caretaker}</p>
         </div>
-        <div style={{ display: 'flex', gap: '12px', position: 'absolute', right: '0', top: '50%', transform: 'translateY(-50%)' }}>
+        <div>
           <button onClick={onExport} className="icon-button" title="Export Data">
             <i className="fas fa-download"></i>
           </button>
