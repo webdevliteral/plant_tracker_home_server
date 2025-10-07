@@ -829,3 +829,32 @@ body {
   background: white;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
+
+/* Camera Upload Button */
+.camera-upload-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 16px 24px;
+  background: #f0f4f1;
+  border: 2px solid #d4dfd5;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 500;
+  color: #2d5016;
+  margin-top: 8px;
+}
+
+.camera-upload-button:hover {
+  background: white;
+  border-color: #81a684;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(90, 138, 94, 0.15);
+}
+
+.camera-upload-button i {
+  font-size: 1.3em;
+  color: #5a8a5e;
+}

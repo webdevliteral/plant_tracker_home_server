@@ -1,51 +1,64 @@
+// src/components/PlantDetailModal.jsx
 import { useState } from 'react'
 
 function PlantDetailModal({ plant, onClose, onAddActivity, onDeletePlant, recommendations, profile }) {
   const [showActivityForm, setShowActivityForm] = useState(false)
   const [activityType, setActivityType] = useState('water')
   const [note, setNote] = useState('')
-  const [files, setFiles] = useState([]);       // File[]
-  const [previews, setPreviews] = useState([]); // string[] object URLs
+  const [files, setFiles] = useState([])
+  const [previews, setPreviews] = useState([])
 
-  const API_ORIGIN = "http://localhost:3000"
+  const API_ORIGIN = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:3000'
 
   const handleAddActivity = async () => {
-  if (!activityType) return;
+    if (!activityType) return
 
-  let imageUrls = [];
-  try {
-    if (files.length > 0) {
-      const form = new FormData();
-      files.forEach(f => form.append('photos', f));
-      const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:3000/api'}/upload`, {
-        method: 'POST',
-        body: form
-      });
-      const { files: uploaded } = await res.json();
-      imageUrls = (uploaded || []).map(f => `${API_ORIGIN}${f.url}`);
+    let imageUrls = []
+    try {
+      if (files.length > 0) {
+        const form = new FormData()
+        files.forEach(f => form.append('photos', f))
+        const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:3000/api'}/upload`, {
+          method: 'POST',
+          body: form
+        })
+        const { files: uploaded } = await res.json()
+        imageUrls = (uploaded || []).map(f => `${API_ORIGIN}${f.url}`)
+      }
+    } catch (e) {
+      console.error('Upload failed:', e)
     }
-  } catch (e) {
-    console.error('Upload failed:', e);
-    // You could toast here; we’ll still log the activity without images.
+
+    onAddActivity(plant.id, {
+      type: activityType,
+      note,
+      caretaker: profile.name,
+      images: imageUrls
+    })
+
+    // cleanup
+    setNote('')
+    setFiles([])
+    previews.forEach((p) => URL.revokeObjectURL(p))
+    setPreviews([])
+    setShowActivityForm(false)
   }
-
-  onAddActivity(plant.id, {
-    type: activityType,
-    note,
-    caretaker: profile.name,
-    images: imageUrls, // ← attach photo URLs to the activity
-  });
-
-  // cleanup
-  setNote('');
-  setFiles([]);
-  previews.forEach((p) => URL.revokeObjectURL(p));
-  setPreviews([]);
-  setShowActivityForm(false);
-};
 
   const handleDelete = () => {
     onDeletePlant(plant.id)
+  }
+
+  const handleFileChange = (e) => {
+    const f = Array.from(e.target.files || [])
+    setFiles(f)
+    previews.forEach((p) => URL.revokeObjectURL(p))
+    setPreviews(f.map(file => URL.createObjectURL(file)))
+  }
+
+  const removePreview = (index) => {
+    URL.revokeObjectURL(previews[index])
+    setFiles(files.filter((_, i) => i !== index))
+    setPreviews(previews.filter((_, i) => i !== index))
   }
 
   const activityIcons = {
@@ -104,6 +117,7 @@ function PlantDetailModal({ plant, onClose, onAddActivity, onDeletePlant, recomm
                 </div>
               ))}
             </div>
+            
             <div className="input-group">
               <label>Notes (optional)</label>
               <textarea
@@ -112,32 +126,41 @@ function PlantDetailModal({ plant, onClose, onAddActivity, onDeletePlant, recomm
                 placeholder="Add any additional details..."
                 rows="3"
               />
+            </div>
+
+            <div className="input-group">
               <label>Photos (optional)</label>
-              <input
-                type="file"
-                accept="image/*"
-                capture="environment"   // or "user" for selfie/front camera
-                multiple
-                onChange={(e) => {
-                  const f = Array.from(e.target.files || []);
-                  setFiles(f);
-                  previews.forEach((p) => URL.revokeObjectURL(p));
-                  setPreviews(f.map(file => URL.createObjectURL(file)));
-                }}
-              />
+              <label className="camera-upload-button">
+                <input
+                  type="file"
+                  accept="image/*"
+                  capture="environment"
+                  multiple
+                  onChange={handleFileChange}
+                  style={{ display: 'none' }}
+                />
+                <i className="fas fa-camera"></i>
+                <span>Take or Upload Photos</span>
+              </label>
+              
               {previews.length > 0 && (
-                <div style={{ display: 'flex', gap: 8, marginTop: 8, flexWrap: 'wrap' }}>
+                <div className="photo-previews">
                   {previews.map((src, i) => (
-                    <img
-                      key={i}
-                      src={src}
-                      alt={`preview-${i}`}
-                      style={{ width: 72, height: 72, objectFit: 'cover', borderRadius: 8, border: '1px solid #e3e9e4' }}
-                    />
+                    <div key={i} className="photo-preview">
+                      <img src={src} alt={`preview-${i}`} />
+                      <button
+                        type="button"
+                        className="remove-photo"
+                        onClick={() => removePreview(i)}
+                      >
+                        <i className="fas fa-times"></i>
+                      </button>
+                    </div>
                   ))}
                 </div>
               )}
             </div>
+
             <button onClick={handleAddActivity} className="button button-primary" style={{ width: '100%' }}>
               Save Activity
             </button>
@@ -165,14 +188,10 @@ function PlantDetailModal({ plant, onClose, onAddActivity, onDeletePlant, recomm
                 )}
                 <p style={{ fontSize: '0.85em', color: '#81a684' }}>by {activity.caretaker || activity.profile}</p>
                 {Array.isArray(activity.images) && activity.images.length > 0 && (
-                  <div style={{ display: 'flex', gap: 8, marginTop: 8, flexWrap: 'wrap' }}>
+                  <div className="activity-photos">
                     {activity.images.map((u, i) => (
-                      <a key={i} href={u} target="_blank" rel="noreferrer">
-                        <img
-                          src={u}
-                          alt={`activity-${i}`}
-                          style={{ width: 84, height: 84, objectFit: 'cover', borderRadius: 8, border: '1px solid #e3e9e4' }}
-                        />
+                      <a key={i} href={u} target="_blank" rel="noreferrer" className="activity-photo">
+                        <img src={u} alt={`activity-${i}`} />
                       </a>
                     ))}
                   </div>
