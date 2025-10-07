@@ -116,11 +116,11 @@ function PlantDetailModal({ plant, onClose, onAddActivity, onDeletePlant, recomm
               <input
                 type="file"
                 accept="image/*"
+                capture="environment"   // or "user" for selfie/front camera
                 multiple
                 onChange={(e) => {
                   const f = Array.from(e.target.files || []);
                   setFiles(f);
-                  // revoke old previews
                   previews.forEach((p) => URL.revokeObjectURL(p));
                   setPreviews(f.map(file => URL.createObjectURL(file)));
                 }}
