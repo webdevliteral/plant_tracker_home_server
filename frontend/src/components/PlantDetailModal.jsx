@@ -1,20 +1,51 @@
 import { useState } from 'react'
 
-function PlantDetailModal({ plant, onClose, onAddActivity, recommendations, caretaker }) {
+function PlantDetailModal({ plant, onClose, onAddActivity, onDeletePlant, recommendations, profile }) {
   const [showActivityForm, setShowActivityForm] = useState(false)
   const [activityType, setActivityType] = useState('water')
   const [note, setNote] = useState('')
+  const [files, setFiles] = useState([]);       // File[]
+  const [previews, setPreviews] = useState([]); // string[] object URLs
 
-  const handleAddActivity = () => {
-    if (activityType) {
-      onAddActivity(plant.id, {
-        type: activityType,
-        note: note,
-        caretaker: caretaker
-      })
-      setNote('')
-      setShowActivityForm(false)
+  const API_ORIGIN = "http://localhost:3000"
+
+  const handleAddActivity = async () => {
+  if (!activityType) return;
+
+  let imageUrls = [];
+  try {
+    if (files.length > 0) {
+      const form = new FormData();
+      files.forEach(f => form.append('photos', f));
+      const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:3000/api'}/upload`, {
+        method: 'POST',
+        body: form
+      });
+      const { files: uploaded } = await res.json();
+      imageUrls = (uploaded || []).map(f => `${API_ORIGIN}${f.url}`);
     }
+  } catch (e) {
+    console.error('Upload failed:', e);
+    // You could toast here; we’ll still log the activity without images.
+  }
+
+  onAddActivity(plant.id, {
+    type: activityType,
+    note,
+    caretaker: profile.name,
+    images: imageUrls, // ← attach photo URLs to the activity
+  });
+
+  // cleanup
+  setNote('');
+  setFiles([]);
+  previews.forEach((p) => URL.revokeObjectURL(p));
+  setPreviews([]);
+  setShowActivityForm(false);
+};
+
+  const handleDelete = () => {
+    onDeletePlant(plant.id)
   }
 
   const activityIcons = {
@@ -22,13 +53,6 @@ function PlantDetailModal({ plant, onClose, onAddActivity, recommendations, care
     feed: 'fa-leaf',
     prune: 'fa-scissors',
     note: 'fa-note-sticky'
-  }
-
-  const activityColors = {
-    water: '#4a90e2',
-    feed: '#5a8a5e',
-    prune: '#9b59b6',
-    note: '#81a684'
   }
 
   return (
@@ -88,6 +112,31 @@ function PlantDetailModal({ plant, onClose, onAddActivity, recommendations, care
                 placeholder="Add any additional details..."
                 rows="3"
               />
+              <label>Photos (optional)</label>
+              <input
+                type="file"
+                accept="image/*"
+                multiple
+                onChange={(e) => {
+                  const f = Array.from(e.target.files || []);
+                  setFiles(f);
+                  // revoke old previews
+                  previews.forEach((p) => URL.revokeObjectURL(p));
+                  setPreviews(f.map(file => URL.createObjectURL(file)));
+                }}
+              />
+              {previews.length > 0 && (
+                <div style={{ display: 'flex', gap: 8, marginTop: 8, flexWrap: 'wrap' }}>
+                  {previews.map((src, i) => (
+                    <img
+                      key={i}
+                      src={src}
+                      alt={`preview-${i}`}
+                      style={{ width: 72, height: 72, objectFit: 'cover', borderRadius: 8, border: '1px solid #e3e9e4' }}
+                    />
+                  ))}
+                </div>
+              )}
             </div>
             <button onClick={handleAddActivity} className="button button-primary" style={{ width: '100%' }}>
               Save Activity
@@ -114,7 +163,20 @@ function PlantDetailModal({ plant, onClose, onAddActivity, recommendations, care
                     {activity.note}
                   </p>
                 )}
-                <p style={{ fontSize: '0.85em', color: '#81a684' }}>by {activity.caretaker}</p>
+                <p style={{ fontSize: '0.85em', color: '#81a684' }}>by {activity.caretaker || activity.profile}</p>
+                {Array.isArray(activity.images) && activity.images.length > 0 && (
+                  <div style={{ display: 'flex', gap: 8, marginTop: 8, flexWrap: 'wrap' }}>
+                    {activity.images.map((u, i) => (
+                      <a key={i} href={u} target="_blank" rel="noreferrer">
+                        <img
+                          src={u}
+                          alt={`activity-${i}`}
+                          style={{ width: 84, height: 84, objectFit: 'cover', borderRadius: 8, border: '1px solid #e3e9e4' }}
+                        />
+                      </a>
+                    ))}
+                  </div>
+                )}
               </div>
             ))}
             {plant.activities.length === 0 && (
@@ -124,6 +186,14 @@ function PlantDetailModal({ plant, onClose, onAddActivity, recommendations, care
             )}
           </div>
         </div>
+
+        <button
+          onClick={handleDelete}
+          className="button button-danger"
+          style={{ width: '100%', marginTop: '24px' }}
+        >
+          <i className="fas fa-trash"></i> Delete Plant
+        </button>
       </div>
     </div>
   )

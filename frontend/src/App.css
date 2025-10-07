@@ -427,6 +427,18 @@ body {
   background: #e6ede7;
 }
 
+.button-danger {
+  background: #f4f4f4;
+  color: #c62828;
+  border: 1px solid #ef5350;
+}
+
+.button-danger:hover {
+  background: #ffebee;
+  border-color: #c62828;
+  color: #b71c1c;
+}
+
 .button-group {
   display: flex;
   gap: 16px;
@@ -689,4 +701,130 @@ body {
     align-items: flex-start;
     gap: 12px;
   }
+}
+
+/* Profile Selector Styles - Add these to the end of App.css */
+
+.profile-selector-screen {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  background: #f4f7f5;
+}
+
+.profile-selector-container {
+  max-width: 900px;
+  width: 100%;
+  text-align: center;
+}
+
+.profile-selector-container h1 {
+  font-family: 'Cormorant Garamond', serif;
+  color: #2d5016;
+  font-size: 3em;
+  margin-bottom: 60px;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+.profiles-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 30px;
+  justify-items: center;
+}
+
+.profile-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 20px;
+  border-radius: 12px;
+}
+
+.profile-card:hover {
+  transform: translateY(-8px);
+}
+
+.profile-card:hover .profile-avatar {
+  transform: scale(1.1);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.profile-avatar {
+  width: 140px;
+  height: 140px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3.5em;
+  font-weight: 600;
+  color: white;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  font-family: 'Cormorant Garamond', serif;
+}
+
+.add-avatar {
+  background: #e8ede9;
+  color: #81a684;
+  border: 3px dashed #c4d4c6;
+}
+
+.add-profile-card:hover .add-avatar {
+  background: white;
+  border-color: #81a684;
+  color: #5a8a5e;
+}
+
+.profile-name {
+  font-size: 1.2em;
+  color: #2d5016;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+@media (max-width: 768px) {
+  .profile-selector-container h1 {
+    font-size: 2em;
+    margin-bottom: 40px;
+  }
+
+  .profiles-grid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 20px;
+  }
+
+  .profile-avatar {
+    width: 110px;
+    height: 110px;
+    font-size: 2.5em;
+  }
+
+  .profile-name {
+    font-size: 1em;
+  }
+}
+
+/* Category Cards */
+.category-card {
+  background: #fafbfa;
+  padding: 24px;
+  border-radius: 8px;
+  border: 1px solid #e8ede9;
+  margin-bottom: 16px;
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.category-card:hover {
+  background: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }

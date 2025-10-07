@@ -1,10 +1,12 @@
+// AddPlantModal.jsx
 import { useState } from 'react'
 
-function AddPlantModal({ onAdd, onClose }) {
+function AddPlantModal({ onAdd, onClose, categories = [] }) {
   const [formData, setFormData] = useState({
     name: '',
     strain: '',
-    stage: 'seedling'
+    stage: 'seedling',
+    categoryId: categories.length > 0 ? categories[0].id : null
   })
 
   const handleSubmit = () => {
@@ -27,15 +29,35 @@ function AddPlantModal({ onAdd, onClose }) {
               placeholder="e.g., Northern Lights #1"
             />
           </div>
+
           <div className="input-group">
-            <label><i className="fas fa-dna"></i> Strain (optional)</label>
+            <label><i className="fas fa-layer-group"></i> Category</label>
+            <select
+              value={formData.categoryId ?? ''}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  categoryId: e.target.value ? parseInt(e.target.value, 10) : null
+                })
+              }
+            >
+              <option value="">No Category</option>
+              {categories.map((cat) => (
+                <option key={cat.id} value={cat.id}>{cat.name}</option>
+              ))}
+            </select>
+          </div>
+
+          <div className="input-group">
+            <label><i className="fas fa-dna"></i> Strain/Variety (optional)</label>
             <input
               type="text"
               value={formData.strain}
               onChange={(e) => setFormData({ ...formData, strain: e.target.value })}
-              placeholder="e.g., Blue Dream"
+              placeholder="e.g., Blue Dream, Roma Tomato"
             />
           </div>
+
           <div className="input-group">
             <label><i className="fas fa-seedling"></i> Growth Stage</label>
             <select
@@ -49,10 +71,9 @@ function AddPlantModal({ onAdd, onClose }) {
             </select>
           </div>
         </div>
+
         <div className="button-group">
-          <button onClick={onClose} className="button button-secondary">
-            Cancel
-          </button>
+          <button onClick={onClose} className="button button-secondary">Cancel</button>
           <button onClick={handleSubmit} className="button button-primary">
             <i className="fas fa-plus"></i> Add Plant
           </button>
