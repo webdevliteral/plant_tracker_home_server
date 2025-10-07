@@ -13,13 +13,13 @@ function Header({ profile, onSwitchProfile, onExport, onImport, onManageCategori
           <button onClick={onSwitchProfile} className="icon-button" title="Switch Profile">
             <i className="fas fa-user-circle"></i>
           </button>
-          <button onClick={onExport} className="icon-button" title="Export Data">
+          {/* <button onClick={onExport} className="icon-button" title="Export Data">
             <i className="fas fa-download"></i>
           </button>
           <label className="icon-button" style={{ cursor: 'pointer', margin: 0 }} title="Import Data">
             <i className="fas fa-upload"></i>
             <input type="file" accept=".json" onChange={onImport} style={{ display: 'none' }} />
-          </label>
+          </label> */}
         </div>
       </div>
     </header>
