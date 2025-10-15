@@ -290,10 +290,15 @@ app.post('/api/upload', upload.array('photos', 10), async (req, res) => {
   }
 });
 
+const httpsOptions = {
+    key: fs.readFileSync('./key.pem'),
+    cert: fs.readFileSync('./cert.pem')
+  };
+
 // Start server
 initDataFile().then(() => {
-  app.listen(PORT, '0.0.0.0', () => {
-    console.log(`🌱 Plant Tracker API running on http://0.0.0.0:${PORT}`);
-    console.log(`📁 Data file: ${DATA_FILE}`);
+  https.createServer(httpsOptions, app).listen(3000, '0.0.0.0', () => {
+    console.log('🌱 Plant Tracker API running on https://0.0.0.0:3000');
+    console.log('📁 Data file:', DATA_FILE);
   });
 });
