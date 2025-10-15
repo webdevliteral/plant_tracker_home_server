@@ -291,8 +291,8 @@ app.post('/api/upload', upload.array('photos', 10), async (req, res) => {
 });
 
 const httpsOptions = {
-    key: fs.readFileSync('./key.pem'),
-    cert: fs.readFileSync('./cert.pem')
+    key: fsSync.readFileSync('./key.pem'),
+    cert: fsSync.readFileSync('./cert.pem')
   };
 
 // Start server
