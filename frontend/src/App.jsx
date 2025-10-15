@@ -1,4 +1,4 @@
-// src/App.jsx - Fresh Complete File
+// src/App.jsx - Complete with Barcode Scanning Support
 import { useState, useEffect } from 'react'
 import './App.css'
 import ProfileSelector from './components/ProfileSelector'
@@ -9,26 +9,27 @@ import Schedule from './components/Schedule'
 import AddPlantModal from './components/AddPlantModal'
 import PlantDetailModal from './components/PlantDetailModal'
 import CategoriesManager from './components/CategoriesManager'
+import BarcodeScanner from './components/BarcodeScanner'
+import { BarcodePrintView } from './components/BarcodePrintView'
 
 export const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 
 function App() {
   const [plants, setPlants] = useState([])
   const [profiles, setProfiles] = useState([])
-  const [categories, setCategories] = useState()
+  const [categories, setCategories] = useState([])
   const [selectedPlant, setSelectedPlant] = useState(null)
   const [view, setView] = useState('plants')
   const [showAddPlant, setShowAddPlant] = useState(false)
   const [showCategories, setShowCategories] = useState(false)
+  const [showScanner, setShowScanner] = useState(false)
+  const [showPrintView, setShowPrintView] = useState(false)
   const [currentProfile, setCurrentProfile] = useState(null)
-  const [loading, setLoading] = useState(false)
   const [taskAssignments, setTaskAssignments] = useState({});
-  
 
   // Load data from server
   useEffect(() => {
     (async () => {
-      // Load everything
       const dataRes = await fetch(`${API_URL}/data`);
       const data = await dataRes.json();
       setPlants(data.plants ?? []);
@@ -62,7 +63,9 @@ function App() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
-          plants: newPlants, profiles: newProfiles || profiles })
+          plants: newPlants, 
+          profiles: newProfiles || profiles 
+        })
       })
     } catch (error) {
       console.error('Failed to save data:', error)
@@ -78,7 +81,6 @@ function App() {
     const newProfiles = [...profiles, newProfile]
     setProfiles(newProfiles)
     await saveData(plants, newProfiles)
-    // Auto-select the newly created profile
     setCurrentProfile(newProfile)
     return newProfile
   }
@@ -163,6 +165,18 @@ function App() {
     return recommendations
   }
 
+  const handleBarcodeScanned = (code) => {
+    setShowScanner(false)
+    const plantId = parseInt(code, 10)
+    const plant = plants.find(p => p.id === plantId)
+    
+    if (plant) {
+      setSelectedPlant(plant)
+    } else {
+      alert(`No plant found with barcode: ${code}`)
+    }
+  }
+
   const exportData = async () => {
     const dataStr = JSON.stringify({ plants, profiles }, null, 2)
     const dataBlob = new Blob([dataStr], { type: 'application/json' })
@@ -193,8 +207,9 @@ function App() {
 
   const getSchedule = () => {
     const today = new Date();
-    const horizonDays = 14; // show 2 weeks out
-    const horizon = new Date(today); horizon.setDate(horizon.getDate() + horizonDays);
+    const horizonDays = 14;
+    const horizon = new Date(today);
+    horizon.setDate(horizon.getDate() + horizonDays);
 
     const byId = Object.fromEntries(categories.map(c => [c.id, c]));
     const result = [];
@@ -202,24 +217,20 @@ function App() {
     plants.forEach(plant => {
       const cat = byId[plant.categoryId] || { wateringDays: 3, feedingDays: 7 };
       const lastWater = plant.activities.slice().reverse().find(a => a.type === 'water');
-      const lastFeed  = plant.activities.slice().reverse().find(a => a.type === 'feed');
+      const lastFeed = plant.activities.slice().reverse().find(a => a.type === 'feed');
 
-      // Compute next due dates from last activities; if none, make it due today.
       const nextWater = new Date(lastWater?.timestamp || today);
       if (lastWater) nextWater.setDate(new Date(lastWater.timestamp).getDate() + (cat.wateringDays || 3));
-      const nextFeed  = new Date(lastFeed?.timestamp || today);
+      const nextFeed = new Date(lastFeed?.timestamp || today);
       if (lastFeed) nextFeed.setDate(new Date(lastFeed.timestamp).getDate() + (cat.feedingDays || 7));
 
       const pushIfInRange = (action, due) => {
         if (due <= horizon) {
           const dateKey = formatISODateOnly(due);
           const key = `${plant.id}:${action}:${dateKey}`;
-
-          // explicit assignment, else deterministic round-robin
           const assignedProfileId = taskAssignments[key]
             ? taskAssignments[key]
             : (pickRoundRobinProfile(key, profiles)?.id ?? null);
-
           const assignedProfile = profiles.find(p => p.id === assignedProfileId) || null;
 
           result.push({
@@ -239,10 +250,8 @@ function App() {
       pushIfInRange('feed', nextFeed);
     });
 
-    // Sort by due date ascending
     return result.sort((a, b) => a.date - b.date);
   };
-
 
   async function handleSaveCategories(nextCategories) {
     const res = await fetch(`${API_URL}/categories`, {
@@ -258,7 +267,6 @@ function App() {
   async function handleAssignTask(taskKey, profileId) {
     const next = { ...taskAssignments, [taskKey]: profileId || undefined };
     setTaskAssignments(next);
-    // Persist (sends only changed entries; backend merges)
     await fetch(`${API_URL}/task-assignments`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
@@ -283,7 +291,13 @@ function App() {
   }
 
   if (!currentProfile) {
-    return <ProfileSelector profiles={profiles} onSelectProfile={selectProfile} onAddProfile={addProfile} />
+    return (
+      <ProfileSelector 
+        profiles={profiles} 
+        onSelectProfile={selectProfile} 
+        onAddProfile={addProfile} 
+      />
+    )
   }
 
   return (
@@ -294,6 +308,8 @@ function App() {
         onExport={exportData}
         onImport={importData}
         onManageCategories={() => setShowCategories(true)}
+        onScanBarcode={() => setShowScanner(true)}
+        onPrintBarcodes={() => setShowPrintView(true)}
       />
 
       <Navigation view={view} onViewChange={setView} />
@@ -319,7 +335,7 @@ function App() {
         <AddPlantModal
           onAdd={addPlant}
           onClose={() => setShowAddPlant(false)}
-          categories={categories}   // ← add this line
+          categories={categories}
         />
       )}
 
@@ -337,8 +353,22 @@ function App() {
       {showCategories && (
         <CategoriesManager
           categories={categories}
-          onSave={handleSaveCategories}        // see below
+          onSave={handleSaveCategories}
           onClose={() => setShowCategories(false)}
+        />
+      )}
+
+      {showScanner && (
+        <BarcodeScanner
+          onScan={handleBarcodeScanned}
+          onClose={() => setShowScanner(false)}
+        />
+      )}
+
+      {showPrintView && (
+        <BarcodePrintView
+          plants={plants}
+          onClose={() => setShowPrintView(false)}
         />
       )}
     </div>

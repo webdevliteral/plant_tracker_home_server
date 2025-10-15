@@ -1,5 +1,15 @@
 {
-  "plants": [],
+  "plants": [
+    {
+      "id": 1760496565157,
+      "name": "Test Plant",
+      "strain": "Unknown Strain 1",
+      "stage": "seedling",
+      "categoryId": 1759797079242,
+      "activities": [],
+      "createdAt": "2025-10-15T02:49:25.157Z"
+    }
+  ],
   "profiles": [
     {
       "id": 1759790820277,

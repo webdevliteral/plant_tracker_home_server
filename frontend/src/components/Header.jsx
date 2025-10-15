@@ -1,4 +1,4 @@
-function Header({ profile, onSwitchProfile, onExport, onImport, onManageCategories }) {
+function Header({ profile, onSwitchProfile, onExport, onImport, onManageCategories, onScanBarcode, onPrintBarcodes }) {
   return (
     <header className="header">
       <div>
@@ -7,19 +7,18 @@ function Header({ profile, onSwitchProfile, onExport, onImport, onManageCategori
           <p>Hello, {profile.name}</p>
         </div>
         <div>
+          <button onClick={onScanBarcode} className="icon-button" title="Scan Barcode">
+            <i className="fas fa-qrcode"></i>
+          </button>
+          <button onClick={onPrintBarcodes} className="icon-button" title="Print Barcodes">
+            <i className="fas fa-print"></i>
+          </button>
           <button onClick={onManageCategories} className="icon-button" title="Manage Categories">
             <i className="fas fa-layer-group"></i>
           </button>
           <button onClick={onSwitchProfile} className="icon-button" title="Switch Profile">
             <i className="fas fa-user-circle"></i>
           </button>
-          {/* <button onClick={onExport} className="icon-button" title="Export Data">
-            <i className="fas fa-download"></i>
-          </button>
-          <label className="icon-button" style={{ cursor: 'pointer', margin: 0 }} title="Import Data">
-            <i className="fas fa-upload"></i>
-            <input type="file" accept=".json" onChange={onImport} style={{ display: 'none' }} />
-          </label> */}
         </div>
       </div>
     </header>
